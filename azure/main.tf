@@ -22,7 +22,24 @@ resource "azurerm_virtual_network" "terraform" {
   resource_group_name = "terraform"
 }
 
+resource "azurerm_subnet" "terraform" {
+  name                 = "interna"
+  resource_group_name  = "terraform"
+  virtual_network_name = "terraform-network"
+  address_prefix       = "10.0.2.0/24"
+}
 
+resource "azurerm_network_interface" "terraform" {
+  name                = "terraform-nic"
+  location            = "brazilsouth"
+  resource_group_name = "terraform"
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = "/subscriptions/f186cf07-fab9-4304-a7b0-927fbdb671dc/resourceGroups/terraform/providers/Microsoft.Network/virtualNetworks/terraform-network/subnets/interna"
+    private_ip_address_allocation = "Dynamic"
+  }
+}
 
 # resource "azurerm_virtual_machine" "dev" {
 #   count               = 3
